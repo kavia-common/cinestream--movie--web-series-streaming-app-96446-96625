@@ -7,7 +7,9 @@ const baseURL = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/+$/, '');
  * Axios API client with interceptors for auth and error handling.
  */
 const api = axios.create({
-  baseURL: baseURL ? `${baseURL}/api` : '/api',
+  // If REACT_APP_API_BASE_URL is set, use it as-is (no automatic '/api' suffix).
+  // Otherwise, default to '/api' to support local proxy setups.
+  baseURL: baseURL || '/api',
   withCredentials: true,
 });
 
