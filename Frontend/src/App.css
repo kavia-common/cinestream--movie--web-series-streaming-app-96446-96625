@@ -223,7 +223,7 @@ a:hover { color: var(--accent); }
   transform: translateZ(0);
 }
 .collage-grid .tile:nth-child(7n) { grid-column: span 2; grid-row: span 2; }
-.collage-grid .tile:nth-child(11n) { grid-column: span 3; grid-row: span 2; }
+collage-grid .tile:nth-child(11n) { grid-column: span 3; grid-row: span 2; }
 .collage-grid .tile:nth-child(5n) { grid-column: span 2; }
 .collage-grid .tile:nth-child(13n) { grid-row: span 2; }
 
@@ -344,4 +344,20 @@ a:hover { color: var(--accent); }
   background: linear-gradient(180deg, rgba(21,21,21,0.78), rgba(21,21,21,0.70));
   backdrop-filter: saturate(140%) blur(8px);
   -webkit-backdrop-filter: saturate(140%) blur(8px);
+}
+
+/* ===== Authenticated theme enhancements ===== */
+.app-shell.auth-theme {
+  /* Subtle dark, cinematic gradient with warm accent glows */
+  background:
+    radial-gradient(120% 140% at 10% 10%, #0e0f1a 0%, #0b0b0f 45%, #0a0a0d 100%),
+    radial-gradient(60% 90% at 85% 12%, rgba(120, 100, 255, 0.08), transparent 60%),
+    radial-gradient(50% 80% at 12% 88%, rgba(232, 122, 65, 0.08), transparent 60%),
+    linear-gradient(180deg, rgba(232, 122, 65, 0.04), rgba(0,0,0,0) 30%);
+}
+
+.app-shell.auth-theme .navbar {
+  background: linear-gradient(180deg, rgba(15,15,18,0.85), rgba(15,15,18,0.65));
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
 }

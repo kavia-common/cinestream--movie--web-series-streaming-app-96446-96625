@@ -1,9 +1,41 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 // PUBLIC_INTERFACE
 export default function Home() {
-  /** Landing page with a cinematic movie collage background and central Register/Login CTA. */
+  /** 
+   * Home page.
+   * - Logged-out: cinematic landing hero with CTA.
+   * - Logged-in: minimal, content-focused view (no marketing elements).
+   */
+  const { token } = useAuth();
+  const isAuthed = !!token;
+
+  if (isAuthed) {
+    return (
+      <section aria-label="Browse content">
+        <h1>Home</h1>
+        <p className="helper">Explore trending titles, search for favorites, or manage your watchlist.</p>
+        <div className="grid">
+          <Link className="card" to="/watchlist" style={{ padding: 16 }}>
+            <div className="content">
+              <strong>Your Watchlist</strong>
+              <span className="helper">Quick access to what you saved.</span>
+            </div>
+          </Link>
+          <Link className="card" to="/search" style={{ padding: 16 }}>
+            <div className="content">
+              <strong>Find Something to Watch</strong>
+              <span className="helper">Search movies, shows, and originals.</span>
+            </div>
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  /** Logged-out landing experience */
   const posters = [
     // Demo images from Unsplash (royalty-free demo). Replace with real poster URLs when available.
     'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1200&q=60',

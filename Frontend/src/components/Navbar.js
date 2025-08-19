@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate, createSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+// PUBLIC_INTERFACE
 export default function Navbar() {
+  /** Top navigation bar. Shows only Home, Watchlist, and Search when authenticated. */
   const [q, setQ] = useState('');
   const navigate = useNavigate();
-  const { token, user, logout } = useAuth();
+  const { token } = useAuth();
+  const isAuthed = !!token;
 
   const doSearch = (e) => {
     e.preventDefault();
@@ -16,12 +19,11 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <Link to="/" className="brand">CineStream</Link>
-      <div className="nav-links">
+      <div className="nav-links" style={{ flexWrap: 'wrap' }}>
         <Link to="/">Home</Link>
         <Link to="/watchlist">Watchlist</Link>
-        <Link to="/profiles">Profiles</Link>
-        {user?.roles?.includes('admin') && <Link to="/admin">Admin</Link>}
-        <form onSubmit={doSearch} style={{display: 'flex', gap: 8, flex: 1}}>
+        <Link to="/search">Search</Link>
+        <form onSubmit={doSearch} style={{ display: 'flex', gap: 8, flex: 1, minWidth: 200 }}>
           <input
             className="search-input"
             placeholder="Search titles, genres..."
@@ -29,20 +31,15 @@ export default function Navbar() {
             onChange={(e) => setQ(e.target.value)}
             aria-label="Search"
           />
-          <button className="btn" type="submit" aria-label="Run search">Search</button>
+          <button className="btn" type="submit" aria-label="Run search">Go</button>
         </form>
       </div>
       <div className="nav-right">
-        {!token ? (
+        {/* For authenticated users, we intentionally keep the top bar minimal per requirements */}
+        {!isAuthed && (
           <>
             <Link to="/login" className="btn">Log in</Link>
             <Link to="/register" className="btn primary">Sign up</Link>
-          </>
-        ) : (
-          <>
-            <span className="helper">Hi, {user?.name || user?.email}</span>
-            <button className="btn" onClick={() => navigate('/plans')}>Plans</button>
-            <button className="btn danger" onClick={logout}>Logout</button>
           </>
         )}
       </div>

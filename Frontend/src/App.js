@@ -19,6 +19,87 @@ import AdminDashboard from './pages/Admin/Dashboard';
 import ContentManager from './pages/Admin/ContentManager';
 import Users from './pages/Admin/Users';
 import Analytics from './pages/Admin/Analytics';
+import { useAuth } from './context/AuthContext';
+
+// Small wrapper to access auth within the layout
+function AppShell() {
+  const { token } = useAuth();
+  const isAuthed = !!token;
+
+  return (
+    <div className={isAuthed ? 'app-shell auth-theme' : 'app-shell'}>
+      <Navbar />
+      <main className="main-container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/title/:id" element={<Details />} />
+          <Route
+            path="/watchlist"
+            element={
+              <ProtectedRoute>
+                <Watchlist />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profiles"
+            element={
+              <ProtectedRoute>
+                <Profiles />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/plans" element={<PlanSelection />} />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/payment/result" element={<PaymentResult />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/content"
+            element={
+              <ProtectedRoute role="admin">
+                <ContentManager />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute role="admin">
+                <Users />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/analytics"
+            element={
+              <ProtectedRoute role="admin">
+                <Analytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
 
 // PUBLIC_INTERFACE
 function App() {
@@ -26,77 +107,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div className="app-shell">
-          <Navbar />
-          <main className="main-container">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/title/:id" element={<Details />} />
-              <Route
-                path="/watchlist"
-                element={
-                  <ProtectedRoute>
-                    <Watchlist />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profiles"
-                element={
-                  <ProtectedRoute>
-                    <Profiles />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/plans" element={<PlanSelection />} />
-              <Route
-                path="/checkout"
-                element={
-                  <ProtectedRoute>
-                    <Checkout />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/payment/result" element={<PaymentResult />} />
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute role="admin">
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/content"
-                element={
-                  <ProtectedRoute role="admin">
-                    <ContentManager />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/users"
-                element={
-                  <ProtectedRoute role="admin">
-                    <Users />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/analytics"
-                element={
-                  <ProtectedRoute role="admin">
-                    <Analytics />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-        </div>
+        <AppShell />
       </AuthProvider>
     </BrowserRouter>
   );
