@@ -20,13 +20,37 @@ export async function login(payload) {
 
 // PUBLIC_INTERFACE
 export async function register(payload) {
-  /** Register a user and return the created user info (no token from backend). 
-   * Backend expects JSON with:
-   * - email
-   * - password
+  /** Register a user and return the created user info (no token from backend).
+   *
+   * Extended payload support:
+   * - email (required)
+   * - password (required)
+   * - phone (optional)
+   * - name (optional - for profile/display)
+   * - age (optional - number)
+   * - plan_id / plan_name / plan_key (optional - selected plan)
+   * - payment_confirmation (optional - object with gateway confirmation/session details)
+   *
+   * Only provided fields are sent to the backend. Backends that ignore unknown
+   * fields will continue to work without changes.
    */
-  const { email, password } = payload || {};
-  const { data } = await api.post('/auth/register', { email, password });
+  const allowList = [
+    'email',
+    'password',
+    'phone',
+    'name',
+    'age',
+    'plan_id',
+    'plan_name',
+    'plan_key',
+    'payment_confirmation',
+  ];
+  const body = {};
+  (allowList).forEach((k) => {
+    if (payload?.[k] !== undefined) body[k] = payload[k];
+  });
+
+  const { data } = await api.post('/auth/register', body);
   return data;
 }
 

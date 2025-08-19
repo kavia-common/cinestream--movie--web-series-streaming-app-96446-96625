@@ -346,6 +346,20 @@ collage-grid .tile:nth-child(11n) { grid-column: span 3; grid-row: span 2; }
   -webkit-backdrop-filter: saturate(140%) blur(8px);
 }
 
+/* --- Onboarding enhancements --- */
+.form .card {
+  border-radius: 10px;
+}
+.form .card strong {
+  font-weight: 700;
+}
+.form .card .helper {
+  font-size: 12px;
+}
+.form .grid > label.card:hover {
+  border-color: var(--accent);
+}
+
 /* ===== Authenticated theme enhancements ===== */
 .app-shell.auth-theme {
   /* Subtle dark, cinematic gradient with warm accent glows */
