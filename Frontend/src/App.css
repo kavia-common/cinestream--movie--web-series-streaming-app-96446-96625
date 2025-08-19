@@ -178,3 +178,170 @@ a:hover { color: var(--accent); }
   border-radius: 12px;
   border: 1px solid var(--border-color);
 }
+
+/* ========== Landing / Welcome ========== */
+.landing-hero {
+  position: relative;
+  /* Break out of the centered container to go full-bleed */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  min-height: calc(100vh - 64px); /* approx minus navbar */
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Atmospheric overlays for cinematic feel */
+.landing-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* layer subtle gradients: vignette + top fade for navbar legibility */
+  background:
+    radial-gradient(120% 100% at 50% 10%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.65) 45%, rgba(0,0,0,0.85) 100%),
+    linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.0) 40%);
+  pointer-events: none;
+}
+
+/* Responsive collage grid */
+.collage-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  grid-auto-rows: minmax(90px, 12vh);
+  gap: 4px;
+  z-index: 0;
+  filter: saturate(1.1) contrast(1.05);
+}
+
+/* Mosaic tile sizing variations for visual interest */
+.collage-grid .tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  transform: translateZ(0);
+}
+.collage-grid .tile:nth-child(7n) { grid-column: span 2; grid-row: span 2; }
+.collage-grid .tile:nth-child(11n) { grid-column: span 3; grid-row: span 2; }
+.collage-grid .tile:nth-child(5n) { grid-column: span 2; }
+.collage-grid .tile:nth-child(13n) { grid-row: span 2; }
+
+@media (max-width: 1200px) {
+  .collage-grid { grid-template-columns: repeat(12, 1fr); }
+}
+@media (max-width: 992px) {
+  .collage-grid { grid-template-columns: repeat(10, 1fr); grid-auto-rows: minmax(80px, 12vh); }
+}
+@media (max-width: 768px) {
+  .collage-grid { grid-template-columns: repeat(8, 1fr); grid-auto-rows: minmax(70px, 12vh); }
+}
+@media (max-width: 576px) {
+  .collage-grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(60px, 12vh); }
+}
+
+/* Collage images with subtle motion */
+.collage-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.85);
+  transform: scale(1.05);
+  transition: transform 6s ease, filter 0.6s ease;
+  animation: collageFloat 14s ease-in-out infinite alternate;
+}
+
+/* Slight parallax zoom animation for ambience */
+@keyframes collageFloat {
+  0%   { transform: scale(1.05) translate(0px, 0px); }
+  100% { transform: scale(1.12) translate(-6px, -4px); }
+}
+
+/* Center call-to-action card (glassmorphism) */
+.cta-card {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 760px);
+  background: linear-gradient(180deg, rgba(21,21,21,0.70), rgba(21,21,21,0.55));
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  border-radius: 18px;
+  padding: clamp(18px, 5vw, 32px);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  text-align: center;
+  color: var(--text-primary);
+  animation: fadeUp 700ms ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 12px)); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.brand-large {
+  font-weight: 900;
+  font-size: clamp(22px, 4vw, 28px);
+  letter-spacing: 0.6px;
+  color: var(--accent);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.cta-title {
+  margin: 0;
+  font-size: clamp(26px, 5.4vw, 44px);
+  line-height: 1.1;
+  letter-spacing: 0.2px;
+}
+
+.cta-subtitle {
+  margin: 10px 0 18px;
+  color: var(--text-secondary);
+  font-size: clamp(14px, 2.6vw, 18px);
+}
+
+.cta-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+/* Larger buttons for the hero */
+.btn-lg {
+  padding: 12px 18px;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+
+.btn.primary.btn-lg {
+  background: linear-gradient(135deg, var(--accent), #ff9966);
+  border-color: transparent;
+  color: #111;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(232, 122, 65, 0.35);
+}
+.btn.primary.btn-lg:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.btn.btn-lg:hover {
+  transform: translateY(-2px);
+}
+
+/* Make navbar readable on top of collage */
+.navbar {
+  background: linear-gradient(180deg, rgba(21,21,21,0.78), rgba(21,21,21,0.70));
+  backdrop-filter: saturate(140%) blur(8px);
+  -webkit-backdrop-filter: saturate(140%) blur(8px);
+}
