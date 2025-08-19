@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { register } from '../../api/auth';
+import { register as apiRegister, login as apiLogin, getMe } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Register() {
   const { login: setAuth } = useAuth();
   const navigate = useNavigate();
-  const [name, setName] = useState('');
+  const [name, setName] = useState(''); // collected for UX but backend does not use it
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,8 +17,26 @@ export default function Register() {
     setErr('');
     setLoading(true);
     try {
-      const res = await register({ name, email, password });
-      setAuth(res?.access_token || res?.token, res?.user);
+      // 1) Create account (backend requires only email & password)
+      await apiRegister({ email, password });
+
+      // 2) Auto login to obtain token
+      const tokenRes = await apiLogin({ email, password });
+      const token = tokenRes?.access_token || tokenRes?.token;
+      if (!token) throw new Error('No token after registration');
+
+      // 3) Set token immediately so axios includes Authorization
+      setAuth(token, null);
+
+      // 4) Fetch user details to store in context
+      try {
+        const me = await getMe();
+        setAuth(token, me?.user || me || null);
+      } catch {
+        // Allow proceeding even if user fetch fails
+      }
+
+      // 5) Forward to plan selection
       navigate('/plans', { replace: true });
     } catch (e) {
       setErr('Registration failed. Please try again.');

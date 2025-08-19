@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { login } from '../../api/auth';
+import { login, getMe } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
@@ -18,8 +18,24 @@ export default function Login() {
     setErr('');
     setLoading(true);
     try {
+      // Request token (backend returns { access_token, token_type })
       const res = await login({ email, password });
-      setAuth(res?.access_token || res?.token, res?.user);
+      const token = res?.access_token || res?.token;
+      if (!token) {
+        throw new Error('No token returned from server');
+      }
+
+      // Set token first so subsequent calls include Authorization header
+      setAuth(token, null);
+
+      // Fetch user info to populate context
+      try {
+        const me = await getMe();
+        setAuth(token, me?.user || me || null);
+      } catch {
+        // If /users/me fails, allow login to proceed with token only
+      }
+
       const redirect = location.state?.from?.pathname || '/';
       navigate(redirect);
     } catch (e) {
