@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders brand in navbar', () => {
+test('renders landing hero for unauthenticated users', () => {
   render(<App />);
-  const brand = screen.getByText(/CineStream/i);
-  expect(brand).toBeInTheDocument();
+  const heroTitle = screen.getByText(/Unlimited movies, shows & originals/i);
+  expect(heroTitle).toBeInTheDocument();
 });

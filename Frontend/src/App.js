@@ -28,7 +28,7 @@ function AppShell() {
 
   return (
     <div className={isAuthed ? 'app-shell auth-theme' : 'app-shell'}>
-      <Navbar />
+      {isAuthed && <Navbar />}
       <main className="main-container">
         <Routes>
           <Route path="/" element={<Home />} />
