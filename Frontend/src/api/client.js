@@ -6,6 +6,8 @@ import { getToken } from '../utils/storage';
 // 1. REACT_APP_API_BASE_URL (preferred for CRA)
 // 2. REACT_APP_BACKEND_URL (common alternative)
 // 3. BACKEND_URL / PUBLIC_BACKEND_URL (some environments inject these at build time)
+// 4. Smart local fallback to same host on :3001 (typical backend port in this project)
+// 5. Finally, '/api' for proxy-based setups
 function resolveBaseURL() {
   const raw =
     process.env.REACT_APP_API_BASE_URL ||
@@ -24,14 +26,35 @@ function resolveBaseURL() {
     url = url.replace(/\/(docs|redoc|openapi\.json)$/i, '');
   }
 
+  if (!url && typeof window !== 'undefined') {
+    // Guess backend at same host but port 3001 (our FastAPI default in this workspace)
+    try {
+      const { protocol, hostname, port } = window.location;
+      // Only guess if we're not already on 3001
+      if (hostname) {
+        const guessed = `${protocol}//${hostname}:3001`;
+        // eslint-disable-next-line no-console
+        if (!window.__API_BASE_URL_WARNED__) {
+          console.warn(
+            `[CineStream] No API base URL configured. Guessing backend at ${guessed}. ` +
+            'Set REACT_APP_API_BASE_URL to silence this message.'
+          );
+          window.__API_BASE_URL_WARNED__ = true;
+        }
+        return guessed;
+      }
+    } catch {
+      // ignore and fall through to '/api'
+    }
+  }
+
   // Fall back to '/api' for local proxy setups if nothing is configured
   if (!url) {
-    // Helpful message for local dev if registration/login fail due to missing config
-    // This will only warn once per load.
     if (typeof window !== 'undefined' && !window.__API_BASE_URL_WARNED__) {
       // eslint-disable-next-line no-console
       console.warn(
-        '[CineStream] No API base URL configured. Set REACT_APP_API_BASE_URL (preferred) or REACT_APP_BACKEND_URL in .env. Falling back to "/api".'
+        '[CineStream] No API base URL configured. Falling back to "/api". ' +
+        'Set REACT_APP_API_BASE_URL (preferred) or REACT_APP_BACKEND_URL in .env.'
       );
       window.__API_BASE_URL_WARNED__ = true;
     }
